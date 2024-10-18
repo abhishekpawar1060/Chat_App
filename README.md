@@ -13,3 +13,13 @@ npm i nodemon
 ````
 
 >step 2: Connection of the Database with mongoose package
+
+>step 3: Write All the API for login and authetication of the user
+
+
+# Create React APP
+```
+npx create-react-app client
+npm install -D tailwindcss
+npx tailwindcss init
+```
