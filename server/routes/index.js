@@ -4,6 +4,7 @@ const registerUser = require("../controller/registerUser");
 const express = require("express");
 const userDetails = require("../controller/userDetails");
 const logout = require("../controller/logout");
+const updateUserDetails = require("../controller/updateUserDetails");
 
 const router = express.Router();
 
@@ -21,6 +22,9 @@ router.get('/user-details', userDetails);
 
 //logout user
 router.get('/logout', logout);
+
+//update user details
+router.post('/update-user', updateUserDetails);
 
 
 
