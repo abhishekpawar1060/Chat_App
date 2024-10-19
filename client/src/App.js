@@ -1,9 +1,10 @@
+import { Outlet } from 'react-router-dom';
 import './App.css';
 
 function App() {
   return (
-    <main className='bg-slate-200'>
-      Hello
+    <main>
+      <Outlet />
     </main>
   );
 }
