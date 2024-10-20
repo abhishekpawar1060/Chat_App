@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { IoClose } from "react-icons/io5";
 import { Link } from 'react-router-dom';
+import uploadFile  from "../helper/uploadFile";
+
 
 function RegisterPage() {
   const [data, setData] = useState({
@@ -23,9 +25,18 @@ function RegisterPage() {
     })
   };
 
-  const handleUploadPhoto = (e) => {
+  const handleUploadPhoto = async (e) => {
     const file = e.target.files[0];
+    const uploadPhoto = await uploadFile(file);
+
     setUploadPhoto(file);
+
+    setData((prev) => {
+      return {
+        ...prev,
+        profile_pic: uploadPhoto?.url
+      }  
+    })
 
   };
 
@@ -37,7 +48,9 @@ function RegisterPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    e.stopPropagation()
+    e.stopPropagation();
+    console.log(data);
+
   }
 
   
@@ -45,7 +58,7 @@ function RegisterPage() {
 
   return (
     <div className='mt-5'>
-      <div className='bg-white w-full max-w-sm mx-2 overflow-hidden p-4 mx-auto'>
+      <div className='bg-white w-full max-w-md rounded overflow-hidden p-4 mx-auto'>
         <h3 className='text-center font-serif bg-slate-400 text-white'>Welcome to the Chat App !</h3>
         <form className='grid gap-4 mt-5' onSubmit={handleSubmit}>
           <div className='flex flex-col'>
