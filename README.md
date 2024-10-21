@@ -24,4 +24,5 @@ npm install -D tailwindcss
 npx tailwindcss init
 npm i react-router-dom
 npm install react-icons --save
+npm i axios
 ```
