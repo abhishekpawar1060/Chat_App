@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { PiUserCircle } from "react-icons/pi";
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import axios from "axios";
 import toast from 'react-hot-toast';
 import Avatar from '../components/Avatar';
+import { useDispatch } from 'react-redux';
+import { setToken, setUser } from '../redux/userSlice';
 
 function CheckPasswordPage() {
 
@@ -14,6 +15,8 @@ function CheckPasswordPage() {
   const navigate = useNavigate();
 
   const location = useLocation();
+
+  const dispatch = useDispatch();
 
   console.log(location.state);
 
@@ -56,7 +59,12 @@ function CheckPasswordPage() {
 
       toast.success(response.data.message);
 
+      // set user details in redux store
+      
       if(response.data.success){
+        dispatch(setToken(response?.data?.token));
+        localStorage.setItem('token', response?.data?.token)
+
         setData({
           password: "",
         })
