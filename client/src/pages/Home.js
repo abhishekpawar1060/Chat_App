@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Outlet, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux';
 import { logout, setUser } from '../redux/userSlice';
+import Sidebar from '../components/Sidebar';
 
 const Home = () => {
 
@@ -42,8 +43,10 @@ const Home = () => {
   }, [])
 
   return (
-    <div>
-      Home PAge
+    <div className='grid lg:grid-cols-[300px,1fr] h-screen max-h-screen'>
+      <section className='bg-white'>
+        <Sidebar />
+      </section>
 
       <section>
         <Outlet />

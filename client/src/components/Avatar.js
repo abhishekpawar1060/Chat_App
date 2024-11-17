@@ -46,7 +46,7 @@ function Avatar({UserId, name, ImageUrl, width, height}) {
                     </div>
                 ) : (
                     <PiUserCircle 
-                        size={80}
+                        size={width}
                     />
                 )
             )
