@@ -1,16 +1,18 @@
 import React, { useEffect } from 'react'
 import axios from 'axios';
-import { Outlet, useNavigate } from 'react-router-dom'
+import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux';
 import { logout, setUser } from '../redux/userSlice';
 import Sidebar from '../components/Sidebar';
+import logo from "../assets/logo1.png"
 
 const Home = () => {
 
   const user  = useSelector(state => state.user);
   const dispatch = useDispatch();
-
   const navigate = useNavigate();
+  const location = useLocation();
+
   console.log("redux user", user);
   
 
@@ -25,7 +27,7 @@ const Home = () => {
 
       dispatch(setUser(response.data.data));
 
-      if(response.data.logout){
+      if(response.data.data.logout){
         dispatch(logout());
         navigate('/email');
       }
@@ -40,17 +42,31 @@ const Home = () => {
 
   useEffect(() => {
     fetchUserDetails();
-  }, [])
+  }, []);
+
+  
+  const basePath = location.pathname === '/';
 
   return (
     <div className='grid lg:grid-cols-[300px,1fr] h-screen max-h-screen'>
-      <section className='bg-white'>
+      <section className={`bg-white ${!basePath && "hidden"} lg:block`}>
         <Sidebar />
       </section>
 
-      <section>
+      <section className={`${basePath  && 'hidden'}`}>
         <Outlet />
       </section>
+
+      <div className={`justify-center items-center flex-col gap-2 hidden ${!basePath ? "hidden" : "lg:flex"}`}>
+        <div>
+          <img 
+            src={logo}
+            width={200}
+            alt='logo'
+          />
+        </div>
+        <p className='text-lg mt-2 text-slate-500'>Select user to send message</p>
+      </div>
     </div>
   )
 }
