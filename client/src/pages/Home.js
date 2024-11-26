@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import axios from 'axios';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux';
-import { logout, setOnlineUser, setUser } from '../redux/userSlice';
+import { logout, setOnlineUser, setUser, setSocketConnection } from '../redux/userSlice';
 import Sidebar from '../components/Sidebar';
 import logo from "../assets/logo1.png"
 
@@ -56,10 +56,12 @@ const Home = () => {
       }
     })
     socketConnection.on('onlineUser', (data) => {
-      console.log("DaTA", data);
+      // console.log("Data", data);
       dispatch(setOnlineUser(data))
       
     })
+
+    dispatch(setSocketConnection(socketConnection))
 
     return () => {
       socketConnection.disconnect();
