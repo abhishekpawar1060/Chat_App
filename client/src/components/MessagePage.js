@@ -8,7 +8,9 @@ import { FaAngleLeft } from "react-icons/fa";
 import { FaPlus } from "react-icons/fa6";
 import { IoImageSharp } from "react-icons/io5";
 import { FaRegFileVideo } from "react-icons/fa";
+import { IoMdClose } from "react-icons/io";
 
+import Loading from './Loading';
 import uploadFile from "../helper/uploadFile";
 
 function MessagePage() {
@@ -33,7 +35,10 @@ function MessagePage() {
     text: "",
     imageUrl: "",
     videoUrl: ""
-  })
+  });
+
+  const [loading, setLoading] = useState(false);
+
 
   const handleUploadImageVideo = () => {
     setOpenImageVideoUpload((prev) => !prev);
@@ -41,7 +46,13 @@ function MessagePage() {
 
   const handleUploadImage = async(e) => {
     const file = e.target.files[0];
+    setLoading(true);
+
     const uploadPhoto = await uploadFile(file);
+
+    setLoading(false);
+    setOpenImageVideoUpload(false);
+
     setMessage(prev => {
       return{
         ...prev,
@@ -52,7 +63,13 @@ function MessagePage() {
 
   const handleUploadVideo = async(e) => {
     const file = e.target.files[0];
+    setLoading(true);
+
     const uploadPhoto = await uploadFile(file);
+
+    setLoading(false);
+    setOpenImageVideoUpload(false);
+
     setMessage(prev => {
       return{
         ...prev,
@@ -60,6 +77,23 @@ function MessagePage() {
       }
     })
   }
+
+  const handleClearUploadImage = () => {
+    setMessage(prev => {
+      return{
+        ...prev,
+        imageUrl: ""
+      }
+    })
+  }  
+  const handleClearUploadVideo = () => {
+    setMessage(prev => {
+      return{
+        ...prev,
+        videoUrl: ""
+      }
+    })
+  }  
 
   useEffect(() => {
     if(socketConnection){
@@ -77,7 +111,7 @@ function MessagePage() {
 
 
   return (
-    <div>
+    <div style={{ backgroundImage: `url(${null})`}} className='bg-repeat bg-cover'>
       <header className='sticky top-0 h-16 bg-white flex justify-between items-center px-4'>
         <div className='flex items-center gap-4'>
           <Link to={"/"} className='lg:hidden'>
@@ -110,8 +144,54 @@ function MessagePage() {
         </div>
       </header>
       
-      <section className='h-[calc(98vh-120px)] bg-red-300 overflow-x overflow-y-scroll scrollbar'>
-        Show All Measage
+      {/* Show Messages */}
+      <section className='h-[calc(98vh-120px)] overflow-x overflow-y-scroll scrollbar relative bg-slate-400 bg-opacity-50'>
+        
+        {/* Upload image Display */}
+        {
+          message.imageUrl && (
+            <div className='w-full h-full bg-slate-600 bg-opacity-30 flex justify-center items-center rounded overflow-hidden'>
+              <div onClick={handleClearUploadImage} className='w-fit p-2 absolute top-0 right-0 cursor-pointer hover:text-red-600'>
+                <IoMdClose size={30}/>
+              </div>
+              <div className='bg-white p-3'>
+                <img 
+                  src={message.imageUrl}
+                  alt='uploadImage'
+                  className='aspect-square w-full h-full max-w-sm m-2 object-scale-down'
+                />
+              </div>
+            </div>
+          )
+        }
+
+        {/* Upload Video Display */}
+        {
+          message.videoUrl && (
+            <div className='w-full h-full bg-slate-600 bg-opacity-30 flex justify-center items-center rounded overflow-hidden'>
+              <div onClick={handleClearUploadVideo} className='w-fit p-2 absolute top-0 right-0 cursor-pointer hover:text-red-600'>
+                <IoMdClose size={30}/>
+              </div>
+              <div className='bg-white p-3'>
+                <video 
+                  src={message.videoUrl} 
+                  className='aspect-square w-full h-full max-w-sm m-2 object-scale-down'
+                  controls
+                  muted
+                  autoPlay
+                />
+              </div>
+            </div>
+          )
+        }
+        {
+          loading && (
+            <div className='w-full h-full flex justify-center items-center'>
+              <Loading />
+            </div>
+          )
+        }
+        
       </section>
       
       {/* Send Mssages */}
@@ -144,11 +224,13 @@ function MessagePage() {
                     type='file'
                     id='uploadImage'
                     onChange={handleUploadImage}
+                    className='hidden'
                   />
                   <input 
                     type='file'
                     id='uploadVideo'
                     onChange={handleUploadVideo}
+                    className='hidden'
                   />
                 </form>
               </div>
