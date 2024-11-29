@@ -11,6 +11,7 @@ function UserSearchCard({user, onClose}) {
           height={50}
           name={user?.name}
           userId={user?._id}
+          ImageUrl={user?.profile_pic}
         />
       </div>
 

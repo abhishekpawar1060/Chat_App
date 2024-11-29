@@ -9,6 +9,7 @@ import { FaPlus } from "react-icons/fa6";
 import { IoImageSharp } from "react-icons/io5";
 import { FaRegFileVideo } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
+import { IoSend } from "react-icons/io5";
 
 import Loading from './Loading';
 import uploadFile from "../helper/uploadFile";
@@ -95,6 +96,8 @@ function MessagePage() {
     })
   }  
 
+  
+
   useEffect(() => {
     if(socketConnection){
       socketConnection.emit('message-page', params.userId)
@@ -104,11 +107,46 @@ function MessagePage() {
         setDataUser(data);
         
       })
+
+      socketConnection.on('message', (data) => {
+        console.log("Message Data", data);
+        
+      })
     }
   },[socketConnection, params.userId, user]);
 
 
+  const handleOnChange = (e) => {
+    const { name, value } = e.target;
+    setMessage( prev => {
+      return{
+        ...prev,
+        text: value
+      }
+    })
+  }
 
+  const handleSendMessage = (e) => {
+    e.preventDefault();
+    if(message.text || message.imageUrl || message.videoUrl){
+      if(socketConnection){
+        socketConnection.emit('new message', {
+          sender: user?._id,
+          receiver: params.userId,
+          text: message.text,
+          image: message.imageUrl,
+          video: message.videoUrl,
+          msgByUserId: user._id
+        })
+
+        setMessage({
+          text: "",
+          imageUrl: "",
+          videoUrl: ""
+        })
+      }
+    }
+  }
 
   return (
     <div style={{ backgroundImage: `url(${null})`}} className='bg-repeat bg-cover'>
@@ -236,8 +274,25 @@ function MessagePage() {
               </div>
             )
           }
-          
         </div>
+
+        {/* Input Field */}
+        <form className='h-full w-full flex' onSubmit={handleSendMessage}>
+          <input 
+            type='text'
+            placeholder='Enter the Message...'
+            className='py-1 px-4 outline-none w-full h-full'
+            value={message.text}
+            onChange={handleOnChange}
+          />
+
+          <button
+            className='text-slate-700 hover:text-red-600'
+          >
+            <IoSend size={30}/>
+          </button>
+        </form>
+        
       </section>
 
 
