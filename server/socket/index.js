@@ -31,7 +31,7 @@ io.on('connection', async(socket) => {
     // console.log("user", user);
 
     // create a room
-    socket.join(user?._id.toString());
+    socket.join(user?._id?.toString());
 
     onlineUser.add(user?._id?.toString());
     

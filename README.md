@@ -27,4 +27,5 @@ npm install react-icons --save
 npm i axios
 npm i socket.io
 npm i socket.io-client
+npm install moment --save
 ```

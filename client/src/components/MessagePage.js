@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { useSelector } from 'react-redux';
-import { Link, useParams } from 'react-router-dom';  
+import { Link, useParams } from 'react-router-dom'; 
+import momonet from 'moment';
+
 import Avatar from './Avatar';
 
 import { BsThreeDotsVertical } from "react-icons/bs";
@@ -39,7 +41,14 @@ function MessagePage() {
   });
 
   const [loading, setLoading] = useState(false);
+  const [allMessage, setAllMessage] = useState([]);
+  const currentMessage = useRef(null);
 
+  useEffect(() => {
+    if(currentMessage.current){
+      currentMessage.current.scrollIntoView({behavior: 'smooth', block: 'end'})
+    }
+  },[allMessage])
 
   const handleUploadImageVideo = () => {
     setOpenImageVideoUpload((prev) => !prev);
@@ -110,7 +119,7 @@ function MessagePage() {
 
       socketConnection.on('message', (data) => {
         console.log("Message Data", data);
-        
+        setAllMessage(data);
       })
     }
   },[socketConnection, params.userId, user]);
@@ -229,6 +238,22 @@ function MessagePage() {
             </div>
           )
         }
+
+        {/* All Message show here */}
+
+        <div className='flex flex-col py-2 gap-2 m-2' ref={currentMessage}>
+          {
+            allMessage.map((msg, index) => {
+              return (
+                <div className={`bg-white p-1 py-1rounded w-fit ${user._id === msg.msgByUserId ? "ml-auto bg-green-300 text-lg" : ""}`}>
+                  <p className='px-2'>{msg.text}</p>
+                  <p className='text-xs ml-auto w-fit'>{momonet(msg.createdAt).format('hh-mm')}</p>
+
+                </div>
+              )
+            })
+          }
+        </div>
         
       </section>
       
