@@ -118,11 +118,11 @@ function MessagePage() {
       })
 
       socketConnection.on('message', (data) => {
-        console.log("Message Data", data);
+        // console.log("Message Data", data);
         setAllMessage(data);
       })
     }
-  },[socketConnection, params.userId, user]);
+  },[socketConnection, params?.userId, user]);
 
 
   const handleOnChange = (e) => {
@@ -137,6 +137,8 @@ function MessagePage() {
 
   const handleSendMessage = (e) => {
     e.preventDefault();
+    console.log("Message" ,message);
+    
     if(message.text || message.imageUrl || message.videoUrl){
       if(socketConnection){
         socketConnection.emit('new message', {
@@ -145,7 +147,7 @@ function MessagePage() {
           text: message.text,
           image: message.imageUrl,
           video: message.videoUrl,
-          msgByUserId: user._id
+          msgByUserId: user?._id
         })
 
         setMessage({
@@ -194,10 +196,47 @@ function MessagePage() {
       {/* Show Messages */}
       <section className='h-[calc(98vh-120px)] overflow-x overflow-y-scroll scrollbar relative bg-slate-400 bg-opacity-50'>
         
+        {/* All Message show here */}
+
+        <div className='flex flex-col py-2 gap-2 mx-2' ref={currentMessage}>
+          {
+            allMessage.map((msg, index) => {
+              return (
+                <div key={index} className={`p-1 py-1 rounded w-fit max-w-[280px] md:max-w-sm lg:max-w-md ${user._id === msg.msgByUserId ? "ml-auto bg-green-200" : "bg-slate-200"}`}>
+                  <div className='w-full relative'>
+                    {
+                      msg?.imageUrl && (
+                        <img 
+                          src={msg?.imageUrl}
+                          className='w-full h-full object-scale-down'
+                        />
+                      )
+                    }
+                  </div>
+                  <div className='w-full relative'>
+                    {
+                      msg?.videoUrl && (
+                        <video
+                          src={msg.videoUrl}
+                          className='w-full h-full object-scale-down'
+                          controls
+                        />
+                      )
+                    }
+                  </div>
+                  <p className='px-2'>{msg.text}</p>
+                  <p className='text-xs ml-auto w-fit'>{momonet(msg.createdAt).format('hh-mm')}</p>
+
+                </div>
+              )
+            })
+          }
+        </div>
+
         {/* Upload image Display */}
         {
           message.imageUrl && (
-            <div className='w-full h-full bg-slate-600 bg-opacity-30 flex justify-center items-center rounded overflow-hidden'>
+            <div className='w-full h-full sticky bottom-0 bg-slate-600 bg-opacity-30 flex justify-center items-center rounded overflow-hidden'>
               <div onClick={handleClearUploadImage} className='w-fit p-2 absolute top-0 right-0 cursor-pointer hover:text-red-600'>
                 <IoMdClose size={30}/>
               </div>
@@ -215,7 +254,7 @@ function MessagePage() {
         {/* Upload Video Display */}
         {
           message.videoUrl && (
-            <div className='w-full h-full bg-slate-600 bg-opacity-30 flex justify-center items-center rounded overflow-hidden'>
+            <div className='w-full h-full sticky bottom-0 bg-slate-600 bg-opacity-30 flex justify-center items-center rounded overflow-hidden'>
               <div onClick={handleClearUploadVideo} className='w-fit p-2 absolute top-0 right-0 cursor-pointer hover:text-red-600'>
                 <IoMdClose size={30}/>
               </div>
@@ -233,27 +272,11 @@ function MessagePage() {
         }
         {
           loading && (
-            <div className='w-full h-full flex justify-center items-center'>
+            <div className='w-full h-full flex sticky bottom-0 justify-center items-center'>
               <Loading />
             </div>
           )
         }
-
-        {/* All Message show here */}
-
-        <div className='flex flex-col py-2 gap-2 m-2' ref={currentMessage}>
-          {
-            allMessage.map((msg, index) => {
-              return (
-                <div className={`bg-white p-1 py-1rounded w-fit ${user._id === msg.msgByUserId ? "ml-auto bg-green-300 text-lg" : ""}`}>
-                  <p className='px-2'>{msg.text}</p>
-                  <p className='text-xs ml-auto w-fit'>{momonet(msg.createdAt).format('hh-mm')}</p>
-
-                </div>
-              )
-            })
-          }
-        </div>
         
       </section>
       

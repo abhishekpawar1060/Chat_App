@@ -70,7 +70,8 @@ io.on('connection', async(socket) => {
                 }
             ]
         })
-
+        
+        
         if(!conversation){
             const createConversation = await ConversationModel({
                 sender: data?.sender,
@@ -81,8 +82,8 @@ io.on('connection', async(socket) => {
 
         const message = new MessageModel({
             text: data.text,
-            image: data.imageUrl,
-            video: data.videoUrl,
+            imageUrl: data.image,
+            videoUrl: data.video,
             msgByUserId: data?.msgByUserId
         })
         
