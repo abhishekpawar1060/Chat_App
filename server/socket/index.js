@@ -52,6 +52,20 @@ io.on('connection', async(socket) => {
 
         socket.emit('message-user', payload);
 
+        const getConversationMessage = await ConversationModel.findOne({
+            "$or": [
+                {
+                    sender: user?._id,
+                    receiver: userId
+                },
+                {
+                    sender: userId,
+                    receiver: user?._id
+                }
+            ]
+        }).populate('messages').sort({ updatedAt: -1})
+
+        socket.emit('message', getConversationMessage.messages)
     })
 
 

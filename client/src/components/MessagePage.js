@@ -212,8 +212,7 @@ function MessagePage() {
                         />
                       )
                     }
-                  </div>
-                  <div className='w-full relative'>
+                    
                     {
                       msg?.videoUrl && (
                         <video
