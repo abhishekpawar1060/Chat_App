@@ -111,6 +111,8 @@ function MessagePage() {
     if(socketConnection){
       socketConnection.emit('message-page', params.userId)
 
+      socketConnection.emit('seen', params.userId);
+
       socketConnection.on('message-user', (data) => {
         // console.log("user details", data);
         setDataUser(data);
@@ -121,6 +123,8 @@ function MessagePage() {
         // console.log("Message Data", data);
         setAllMessage(data);
       })
+
+
     }
   },[socketConnection, params?.userId, user]);
 
